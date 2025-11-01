@@ -1,7 +1,6 @@
-import express, { type Request, type Response } from 'express'
+import express from 'express'
+import authRouter from './routes/authRoutes.js';
 
 export const app=express();
 app.use(express.json());
-app.get("/",(req:Request,res:Response)=>{
-    res.send("Api running Successfully");
-})
+app.use("/api/auth", authRouter)
