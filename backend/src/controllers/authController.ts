@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import client from "../prismaClient.js";
-import { users, account } from "../config/appWrite.js";
+import { account } from "../config/appWrite.js";
 
 export const signUp = async(req: Request, res: Response)=>{
     const { email, password, name, batch, role } = req.body;

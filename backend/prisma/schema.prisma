@@ -17,8 +17,8 @@ model User {
   appwriteId String   @unique 
   email      String   @unique
   name       String
-  batch      String
-  role       Role     @default(STUDENT)
+  batch      String?
+  role       Role?     @default(STUDENT)
   bio        String?
   linkedin   String?
   github     String?
