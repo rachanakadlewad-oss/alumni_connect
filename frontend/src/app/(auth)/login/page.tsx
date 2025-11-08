@@ -75,7 +75,7 @@ export default function Login() {
             });
             checkAuth()
             window.dispatchEvent(new Event('authStateChanged'));
-            router.push('/dashboard')
+            router.replace('/dashboard')
         }
         catch (error: any) {
             console.log('Full error:', error.response?.data);

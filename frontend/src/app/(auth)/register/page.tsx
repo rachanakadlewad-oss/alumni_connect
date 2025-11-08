@@ -302,7 +302,7 @@ export default function Register() {
                     </span>
                 </div>
 
-                <div  className="flex flex-col gap-y-1">
+                {formData.role=="ALUMNI"&&<div  className="flex flex-col gap-y-1">
                     <label className="text-sm font-medium text-blue-700">LinkedIn</label>
                     <input
                         type="url"
@@ -312,9 +312,9 @@ export default function Register() {
                             }`}
                         placeholder="LinkedIn profile link"
                     />
-                </div>
+                </div>}
 
-                <div  className="flex flex-col gap-y-1">
+                {formData.role=="ALUMNI"&&<div  className="flex flex-col gap-y-1">
                     <label className="text-sm font-medium text-blue-700">GitHub</label>
                     <input
                         type="url"
@@ -324,9 +324,9 @@ export default function Register() {
                             }`}
                         placeholder="GitHub profile link"
                     />
-                </div>
+                </div>}
 
-                <div  className="flex flex-col gap-y-1">
+                {formData.role=="ALUMNI"&&<div  className="flex flex-col gap-y-1">
                     <label className="text-sm font-medium text-blue-700">Personal Website</label>
                     <input
                         type="url"
@@ -336,8 +336,8 @@ export default function Register() {
                             }`}
                         placeholder="Portfolio or website"
                     />
-                </div>
-                <div  className="flex flex-col gap-y-1">
+                </div>}
+                {formData.role=="ALUMNI"&&<div  className="flex flex-col gap-y-1">
                     <label className="text-sm font-medium text-blue-700">Organisation</label>
                     <input
                         type="text"
@@ -347,8 +347,8 @@ export default function Register() {
                             }`}
                         placeholder="Your company or institute"
                     />
-                </div>
-                <div  className="flex flex-col gap-y-1">
+                </div>}
+                {formData.role=="ALUMNI"&&<div  className="flex flex-col gap-y-1">
                     <label className="text-sm font-medium text-blue-700">Bio</label>
                     <textarea
                         value={formData.bio}
@@ -357,7 +357,7 @@ export default function Register() {
                             }`}
                         rows={3}
                     />
-                </div>
+                </div>}
 
                 {errors.general && (
                     <div className="p-3 bg-red-50 border border-red-200 rounded-md">

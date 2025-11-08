@@ -12,20 +12,18 @@ const NavBar = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('role')
     checkAuth()
-    router.push("/")
+    router.replace("/")
   }
 
   return (
     <header className="absolute top-0 bg-blue-100 w-full shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <BookOpen className="w-8 h-8 text-blue-600" />
             <span className="text-2xl font-bold text-gray-900">Alumify</span>
           </Link>
 
-          {/* Navigation Links */}
           <nav className="hidden md:flex items-center space-x-8">
             {!isAuthenticated && (
               <>
@@ -54,7 +52,7 @@ const NavBar = () => {
 
             {isAuthenticated && role === 'ALUMNI' && (
               <>
-                <Link href="/instructor/dashboard" className="text-gray-700 hover:text-blue-600 font-medium">
+                <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium">
                   Alumni Dashboard
                 </Link>
                 <Link href="/instructor/manage-courses" className="text-gray-700 hover:text-blue-600 font-medium">
@@ -64,7 +62,6 @@ const NavBar = () => {
             )}
           </nav>
 
-          {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
             {!isAuthenticated ? (
               <>

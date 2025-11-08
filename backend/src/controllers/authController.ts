@@ -58,7 +58,19 @@ export const signIn = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     const session = await account.createEmailPasswordSession(email, password);
+    const user= await client.user.findFirst({
+      where:{
+        email:email
+      },
+      select:{
+        role:true,
+        name:true,
+      }
+    })
+
     res.json({
+      name:user?.name,
+      role:user?.role,
       token: session.secret,
     });
   } catch (err: any) {

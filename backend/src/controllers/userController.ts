@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import client from "../prismaClient.js";
 import { users } from "../config/appWrite.js";
 
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getAllAlumni = async (req: Request, res: Response) => {
   try {
     const users = await client.user.findMany({
       orderBy: { createdAt: "desc" },
@@ -13,6 +13,8 @@ export const getAllUsers = async (req: Request, res: Response) => {
         role: true,
         batch: true,
         linkedin: true,
+        github:true,
+        website:true,
         bio: true,
         organisation: {
           select: {
@@ -22,10 +24,19 @@ export const getAllUsers = async (req: Request, res: Response) => {
         createdAt: true,
       },
     });
+    const finalUsers = users
+  .filter((user) => user.role === "ALUMNI") // ✅ only alumni
+  .map((user) => ({
+    ...user,
+    role: "ALUMNI",
+  }));
 
-    res.status(200).json(users);
+    res.status(200).json({
+      users:finalUsers,
+      success:true
+    });
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message , success:false});
   }
 };
 
@@ -41,16 +52,9 @@ export const getUserById = async (req: Request, res: Response) => {
       where: {
         id: String(id),
       },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        batch: true,
-        linkedin: true,
-        bio: true,
-        createdAt: true,
-      },
+      include: {
+    organisation: true, // ✅ populate the related organisation
+  },
     });
 
     if (!user) {
