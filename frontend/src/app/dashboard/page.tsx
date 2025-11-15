@@ -91,9 +91,9 @@ export default function AlumniDashboard() {
               flex flex-col sm:flex-row 
               items-center 
               gap-3 
-              bg-[#0d0d0d] 
+              bg-black 
               border border-gray-800 
-              rounded-xl 
+              rounded-full
               p-4
             ">
               
@@ -103,11 +103,11 @@ export default function AlumniDashboard() {
                   placeholder="Search alumni..."
                   className="
                     w-full px-4 py-2 
-                    bg-[#111] 
+                    bg-black
                     text-white 
                     placeholder-white/40 
                     border border-gray-700 
-                    rounded-lg 
+                    rounded-full
                     focus:outline-none 
                     focus:ring-1 
                     focus:ring-blue-500 
@@ -123,10 +123,10 @@ export default function AlumniDashboard() {
                 className="
                   w-full sm:w-auto 
                   px-4 py-2 
-                  bg-[#111] 
+                  bg-black
                   text-white 
                   border border-gray-700 
-                  rounded-lg 
+                  rounded-full 
                   focus:outline-none 
                   focus:ring-1 
                   focus:ring-blue-500 
@@ -150,7 +150,7 @@ export default function AlumniDashboard() {
                   bg-[#111] 
                   text-white 
                   border border-gray-700 
-                  rounded-lg 
+                  rounded-full 
                   focus:outline-none 
                   focus:ring-1 
                   focus:ring-blue-500 

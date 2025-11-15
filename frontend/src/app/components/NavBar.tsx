@@ -1,5 +1,5 @@
 'use client'
-import { Archive, BookOpen, Home, User, Settings, LogOut, LogIn, UserPlus } from 'lucide-react'
+import { Archive, BookOpen, Home, User, Settings, LogOut, LogIn, UserPlus, CodeXml } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
@@ -37,7 +37,7 @@ const NavBar = () => {
       return [
         { icon: Home, label: 'Home', onClick: () => router.push('/') },
         { icon: BookOpen, label: 'About', onClick: () => router.push('/about') },
-        { icon: Archive, label: 'Contact', onClick: () => router.push('/contact') },
+        { icon: CodeXml, label: 'Creators', onClick: () => router.push('/creators') },
         { icon: LogIn, label: 'Sign In', onClick: () => router.push('/login') },
         { icon: UserPlus, label: 'Register', onClick: () => router.push('/register') },
       ]
@@ -46,9 +46,8 @@ const NavBar = () => {
     if (role === 'STUDENT') {
       return [
         { icon: Home, label: 'Dashboard', onClick: () => router.push('/dashboard') },
-        { icon: Archive, label: 'Connect', onClick: () => router.push('/courses') },
         { icon: User, label: 'Profile', onClick: () => router.push('/profile') },
-        { icon: Settings, label: 'Settings', onClick: () => router.push('/settings') },
+        { icon: CodeXml, label: 'Creators', onClick: () => router.push('/creators') },
         { icon: LogOut, label: 'Logout', onClick: handleLogout },
       ]
     }
@@ -56,9 +55,8 @@ const NavBar = () => {
     if (role === 'ALUMNI') {
       return [
         { icon: Home, label: 'Dashboard', onClick: () => router.push('/dashboard') },
-        { icon: Archive, label: 'Details', onClick: () => router.push('/instructor/manage-courses') },
         { icon: User, label: 'Profile', onClick: () => router.push('/profile') },
-        { icon: Settings, label: 'Settings', onClick: () => router.push('/settings') },
+        { icon: CodeXml, label: 'Creators', onClick: () => router.push('/creators') },
         { icon: LogOut, label: 'Logout', onClick: handleLogout },
       ]
     }
@@ -92,7 +90,6 @@ const NavBar = () => {
             isScrolled ? 'border border-white/10 shadow-2xl' : ''
           }`}
         >
-          {/* Logo */}
           <motion.div
             animate={{ 
               scale: isScrolled ? 0.85 : 1,
@@ -122,7 +119,6 @@ const NavBar = () => {
             </Link>
           </motion.div>
 
-          {/* Navigation Items */}
           <motion.div
             onMouseMove={(e) => mouseX.set(e.pageX)}
             onMouseLeave={() => {
@@ -203,7 +199,6 @@ const NavItem = ({ item, index, mouseX, isHovered, setHoveredIndex, isScrolled, 
         isScrolled ? 'w-4 h-4' : 'w-5 h-5'
       }`} />
       
-      {/* Tooltip */}
       {isHovered && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
