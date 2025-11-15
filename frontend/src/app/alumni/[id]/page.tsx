@@ -43,10 +43,16 @@ export default function AlumniDetailsPage() {
       try {
         setLoading(true);
         setError(null);
-
+        const token=localStorage.getItem('token')
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user/${id}`
-        );
+  `${process.env.NEXT_PUBLIC_API_URL}/api/user/${id}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+);
+
         setAlumni(response.data);
       } catch (err) {
         console.error("Error fetching alumni details:", err);

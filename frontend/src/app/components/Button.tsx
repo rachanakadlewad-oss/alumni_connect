@@ -20,24 +20,39 @@ export function Button({
   className = '',
   ...props 
 }: ButtonProps) {
-  const baseClasses = ' cursor-pointer inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed';
   
+  const baseClasses =
+    "cursor-pointer inline-flex items-center justify-center font-medium rounded-full transition-all duration-200 " +
+    "focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed";
+
   const variants = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-blue-100',
-    secondary: 'bg-blue-500/30 hover:bg-gray-300 text-blue-700',
-    outline: 'border-2 border-blue-600 text-teal-600 hover:bg-blue-50 focus:ring-blue-500',
-    ghost: 'text-blue-600 hover:bg-blue-50 ',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
-    success: 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500'
+    primary:
+      "bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white focus:ring-2 focus:ring-blue-500",
+    
+    secondary:
+      "bg-blue-600/10 hover:bg-blue-600/20 active:bg-blue-600/30 text-blue-200 border border-blue-600/30 " +
+      "focus:ring-2 focus:ring-blue-500",
+    
+    outline:
+      "border border-blue-600 text-blue-500 hover:bg-blue-600/10 active:bg-blue-600/20 focus:ring-2 focus:ring-blue-500",
+    
+    ghost:
+      "text-blue-500 hover:bg-blue-600/10 active:bg-blue-600/20 focus:ring-2 focus:ring-blue-500",
+    
+    danger:
+      "bg-red-600 hover:bg-red-700 active:bg-red-800 text-white focus:ring-2 focus:ring-red-500",
+    
+    success:
+      "bg-green-600 hover:bg-green-700 active:bg-green-800 text-white focus:ring-2 focus:ring-green-500"
   };
   
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-7 py-2 text-lg',
-    xl: 'px-8 py-4 text-xl'
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-4 py-2 text-base",
+    lg: "px-7 py-2 text-lg",
+    xl: "px-8 py-4 text-xl"
   };
-  
+
   const classes = `${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`;
   
   return (
