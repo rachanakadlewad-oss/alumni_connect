@@ -5,23 +5,25 @@ import { Mail, User, Lock, BookOpen, Briefcase, Linkedin, Github, Globe, Buildin
 import axios from 'axios';
 
 export default function ProfilePage() {
-  const [userType, setUserType] = useState<'student' | 'alumni'>('alumni');
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
+  const[role,setRole]=useState("STUDENT");
+  useEffect(()=>{
+    setRole(localStorage.getItem('role') as string)
+  },[])
+  const [userType, setUserType] = useState<'STUDENT' | 'ALUMNI'| string>( role ||"STUDENT");
   const [formData, setFormData] = useState({
     email: '',
-    fullName: '',
-    password: '',
-    confirmPassword: '',
+    name: '',
+
     batch: '',
     role: '',
-    linkedIn: '',
-    gitHub: '',
-    personalWebsite: '',
+    linkedin: '',
+    github: '',
+    website: '',
     organisation: '',
     bio: '',
   });
@@ -32,35 +34,39 @@ export default function ProfilePage() {
         setIsLoading(true);
         setError(null);
         
+        // Get profile data
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/user/`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
         
         const profileData = response.data;
         
+        // Set user type based on fetched data
         if (profileData.userType) {
           setUserType(profileData.userType);
         }
         
+        // Populate form data with fetched data
         setFormData(prev => ({
-          ...prev,
-          ...profileData,
+           ...prev,
+  ...profileData,
+  organisation: profileData.organisation?.name || "",
         }));
       } catch (err: any) {
         console.error('Fetch profile error:', err.message);
         setError('Failed to load profile. Using demo data.');
+        // Set dummy data as fallback
         setFormData({
           email: 'alex.johnson@alumni.edu',
-          fullName: 'Alex Johnson',
-          password: '••••••••',
-          confirmPassword: '••••••••',
+          name: 'Alex Johnson',
+          
           batch: '2020',
           role: 'Alumni',
-          linkedIn: 'linkedin.com/in/alexjohnson',
-          gitHub: 'github.com/alexjohnson',
-          personalWebsite: 'alexjohnson.dev',
+          linkedin: 'linkedin.com/in/alexjohnson',
+          github: 'github.com/alexjohnson',
+          website: 'alexjohnson.dev',
           organisation: 'Tech Innovations Inc.',
           bio: 'Passionate software engineer dedicated to building innovative solutions.',
         });
@@ -83,6 +89,7 @@ export default function ProfilePage() {
       setError(null);
       setSuccess(null);
 
+      // Update profile
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/api/user/edit`,
         {
@@ -91,7 +98,7 @@ export default function ProfilePage() {
         },
         {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
           }
         }
@@ -101,6 +108,7 @@ export default function ProfilePage() {
       setSuccess('Profile updated successfully!');
       setIsEditing(false);
 
+      // Clear success message after 3 seconds
       setTimeout(() => setSuccess(null), 3000);
     } catch (err: any) {
       console.error('Save profile error:', err.message);
@@ -112,17 +120,15 @@ export default function ProfilePage() {
 
   const basicFields = [
     { label: 'Email Address', name: 'email', icon: Mail, type: 'email' },
-    { label: 'Full Name', name: 'fullName', icon: User, type: 'text' },
-    { label: 'Password', name: 'password', icon: Lock, type: 'password' },
-    { label: 'Confirm Password', name: 'confirmPassword', icon: Lock, type: 'password' },
+    { label: 'Full Name', name: 'name', icon: User, type: 'text' },
     { label: 'Batch', name: 'batch', icon: BookOpen, type: 'text' },
     { label: 'Role', name: 'role', icon: Briefcase, type: 'text' },
   ];
 
   const socialFields = [
-    { label: 'LinkedIn', name: 'linkedIn', icon: Linkedin, type: 'text' },
-    { label: 'GitHub', name: 'gitHub', icon: Github, type: 'text' },
-    { label: 'Personal Website', name: 'personalWebsite', icon: Globe, type: 'text' },
+    { label: 'LinkedIn', name: 'linkedin', icon: Linkedin, type: 'text' },
+    { label: 'GitHub', name: 'github', icon: Github, type: 'text' },
+    { label: 'Personal Website', name: 'website', icon: Globe, type: 'text' },
     { label: 'Organisation', name: 'organisation', icon: Building2, type: 'text' },
   ];
 
@@ -130,18 +136,18 @@ export default function ProfilePage() {
     return (
       <main className="min-h-screen bg-gradient-to-br from-black via-slate-950 to-black text-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-cyan-600/30 border-t-cyan-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-cyan-300">Loading profile...</p>
+          <div className="w-12 h-12 border-4 border-purple-600/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-purple-300">Loading profile...</p>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-black via-slate-950 to-black text-white">
+    <main className=" pt-25 min-h-screen bg-gradient-to-br from-black via-slate-950 to-black text-white">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-40 right-20 w-96 h-96 bg-cyan-600/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-40 left-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-40 right-20 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-40 left-20 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10">
@@ -162,59 +168,60 @@ export default function ProfilePage() {
           )}
 
           {/* Basic Information Section */}
-          <div className="bg-gradient-to-br from-cyan-900/30 to-black border border-cyan-800/40 rounded-2xl p-8 shadow-xl shadow-cyan-900/10">
+          <div className="bg-gradient-to-br from-purple-900/30 to-black border border-purple-800/40 rounded-2xl p-8 shadow-xl shadow-purple-900/10">
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-2xl font-bold text-white">Account Information</h3>
               <button
-                onClick={() => setIsEditing(!isEditing)}
+                onClick={() => {
+                  setIsEditing(!isEditing)
+                }}
                 disabled={isSaving}
                 className={`px-6 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 disabled:opacity-50 ${
-                  isEditing
-                    ? 'bg-green-600/80 hover:bg-green-600 text-white'
-                    : 'bg-cyan-600/80 hover:bg-cyan-600 text-white'
+                  !isEditing &&
+                     'bg-purple-600/80 hover:bg-purple-600 text-white'
                 }`}
               >
-                {isEditing ? (
-                  <>
-                    <Save className="w-4 h-4" />
-                    Save
-                  </>
-                ) : (
+                {!isEditing && (
                   'Edit'
                 )}
               </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {basicFields.map((field) => {
+              {basicFields.filter(Boolean).map((field) => {
                 const IconComponent = field.icon;
                 return (
                   <div key={field.name} className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-semibold text-cyan-300 uppercase tracking-wider">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-purple-300 uppercase tracking-wider">
                       <IconComponent className="w-4 h-4" />
                       {field.label}
                     </label>
-                    {isEditing ? (
-                      <input
-                        type={field.type}
-                        name={field.name}
-                        value={formData[field.name as keyof typeof formData]}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-black/40 border border-cyan-700/50 rounded-lg text-white placeholder-cyan-400/50 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
-                      />
-                    ) : (
-                      <div className="px-4 py-3 bg-black/40 border border-cyan-700/30 rounded-lg text-white/80">
-                        {formData[field.name as keyof typeof formData]}
-                      </div>
-                    )}
+{isEditing ? (
+  <input
+    type={field.type}
+    name={field.name}
+    value={formData[field.name as keyof typeof formData] ?? ""}
+    onChange={handleInputChange}
+    readOnly={field.name === "role"}
+    className="w-full px-4 py-3 bg-black/40 border border-purple-700/50 rounded-lg text-white placeholder-purple-400/50 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition-all"
+  />
+) : (
+  <div className="px-4 py-3 bg-black/40 border border-purple-700/30 rounded-lg text-white/80">
+    {(formData[field.name as keyof typeof formData] ?? "") === ""
+      ? "—"
+      : formData[field.name as keyof typeof formData]}
+  </div>
+)}
+
+
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {userType === 'alumni' && (
-            <div className="bg-gradient-to-br from-cyan-900/30 to-black border border-cyan-800/40 rounded-2xl p-8 shadow-xl shadow-cyan-900/10">
+          {userType === 'ALUMNI' && (
+            <div className="bg-gradient-to-br from-purple-900/30 to-black border border-purple-800/40 rounded-2xl p-8 shadow-xl shadow-purple-900/10">
               <h3 className="text-2xl font-bold text-white mb-8">Professional Information</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -222,23 +229,26 @@ export default function ProfilePage() {
                   const IconComponent = field.icon;
                   return (
                     <div key={field.name} className="space-y-2">
-                      <label className="flex items-center gap-2 text-sm font-semibold text-cyan-300 uppercase tracking-wider">
+                      <label className="flex items-center gap-2 text-sm font-semibold text-purple-300 uppercase tracking-wider">
                         <IconComponent className="w-4 h-4" />
                         {field.label}
                       </label>
                       {isEditing ? (
-                        <input
-                          type={field.type}
-                          name={field.name}
-                          value={formData[field.name as keyof typeof formData]}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 bg-black/40 border border-cyan-700/50 rounded-lg text-white placeholder-cyan-400/50 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
-                        />
-                      ) : (
-                        <div className="px-4 py-3 bg-black/40 border border-cyan-700/30 rounded-lg text-white/80">
-                          {formData[field.name as keyof typeof formData]}
-                        </div>
-                      )}
+  <input
+    type={field.type}
+    name={field.name}
+    value={formData[field.name as keyof typeof formData] ?? ""}
+    onChange={handleInputChange}
+    readOnly={field.name === "role"}
+    className="w-full px-4 py-3 bg-black/40 border border-purple-700/50 rounded-lg text-white placeholder-purple-400/50 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition-all"
+  />
+) : (
+  <div className="px-4 py-3 bg-black/40 border border-purple-700/30 rounded-lg text-white/80">
+    {(formData[field.name as keyof typeof formData] ?? "") === ""
+      ? "—"
+      : formData[field.name as keyof typeof formData]}
+  </div>
+)}
                     </div>
                   );
                 })}
@@ -246,7 +256,7 @@ export default function ProfilePage() {
 
               {/* Bio Section */}
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-cyan-300 uppercase tracking-wider">
+                <label className="flex items-center gap-2 text-sm font-semibold text-purple-300 uppercase tracking-wider">
                   <FileText className="w-4 h-4" />
                   Bio
                 </label>
@@ -256,10 +266,10 @@ export default function ProfilePage() {
                     value={formData.bio}
                     onChange={handleInputChange}
                     rows={4}
-                    className="w-full px-4 py-3 bg-black/40 border border-cyan-700/50 rounded-lg text-white placeholder-cyan-400/50 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all resize-none"
+                    className="w-full px-4 py-3 bg-black/40 border border-purple-700/50 rounded-lg text-white placeholder-purple-400/50 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition-all resize-none"
                   />
                 ) : (
-                  <div className="px-4 py-3 bg-black/40 border border-cyan-700/30 rounded-lg text-white/80">
+                  <div className="px-4 py-3 bg-black/40 border border-purple-700/30 rounded-lg text-white/80">
                     {formData.bio}
                   </div>
                 )}
@@ -273,14 +283,14 @@ export default function ProfilePage() {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 rounded-lg font-semibold text-white transition-all shadow-lg shadow-cyan-500/30 disabled:opacity-50"
+                className="flex-1 px-6 border-5 border-red-500 py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 rounded-lg font-semibold text-white transition-all shadow-lg shadow-purple-500/30 disabled:opacity-50"
               >
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
               <button
                 onClick={() => setIsEditing(false)}
                 disabled={isSaving}
-                className="flex-1 px-6 py-3 bg-cyan-900/40 hover:bg-cyan-900/60 border border-cyan-700/50 rounded-lg font-semibold text-white transition-all disabled:opacity-50"
+                className="flex-1 px-6 py-3 bg-purple-900/40 hover:bg-purple-900/60 border border-purple-700/50 rounded-lg font-semibold text-white transition-all disabled:opacity-50"
               >
                 Cancel
               </button>

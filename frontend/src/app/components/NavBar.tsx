@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useRef } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import Image from 'next/image'
 
 const NavBar = () => {
   const { isAuthenticated, role, checkAuth } = useAuth()
@@ -103,9 +104,9 @@ const NavBar = () => {
                   padding: isScrolled ? '0.375rem' : '0.5rem'
                 }}
                 transition={isMounted ? { duration: 0.3 } : { duration: 0 }}
-                className="bg-gradient-to-br from-blue-500/30 to-blue-600/30 backdrop-blur-sm rounded-xl border border-blue-400/30"
+                className="bg-[#0f161c] backdrop-blur-sm rounded-xl border border-[#0f161c]"
               >
-                <BookOpen className={isScrolled ? "w-5 h-5 text-blue-400" : "w-6 h-6 text-blue-400"} />
+                <Image src={'/logo.jpeg'} width={120} height={70} alt='logo'></Image>
               </motion.div>
               <motion.span 
                 animate={{
@@ -114,7 +115,6 @@ const NavBar = () => {
                 transition={isMounted ? { duration: 0.3 } : { duration: 0 }}
                 className="font-bold text-white"
               >
-                Alumify
               </motion.span>
             </Link>
           </motion.div>

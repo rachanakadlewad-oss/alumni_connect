@@ -1,10 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Linkedin,
-  Github,
-  Globe,
-} from "lucide-react";
+import { Linkedin, Github, Globe } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -35,8 +31,15 @@ export default function AlumniDashboard() {
         setLoading(true);
         setError(null);
 
+        const token = localStorage.getItem("token");
+
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user/alumni`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user/alumni`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
         setAlumniData(response.data.users);
@@ -87,7 +90,8 @@ export default function AlumniDashboard() {
       <div className=" pt-23 min-h-screen bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
-            <div className="
+            <div
+              className="
               flex flex-col sm:flex-row 
               items-center 
               gap-3 
@@ -95,8 +99,8 @@ export default function AlumniDashboard() {
               border border-gray-800 
               rounded-full
               p-4
-            ">
-              
+            "
+            >
               <div className="flex-1 w-full">
                 <input
                   type="text"
@@ -137,7 +141,11 @@ export default function AlumniDashboard() {
                 onChange={(e) => setSelectedBatch(e.target.value)}
               >
                 {batches.map((batch) => (
-                  <option key={batch} value={batch} className="bg-[#111] text-white">
+                  <option
+                    key={batch}
+                    value={batch}
+                    className="bg-[#111] text-white"
+                  >
                     {batch === "all" ? "All Batches" : batch}
                   </option>
                 ))}
@@ -161,12 +169,15 @@ export default function AlumniDashboard() {
                 onChange={(e) => setSelectedOrg(e.target.value)}
               >
                 {organisations.map((org) => (
-                  <option key={org} value={org} className="bg-[#111] text-white">
+                  <option
+                    key={org}
+                    value={org}
+                    className="bg-[#111] text-white"
+                  >
                     {org === "all" ? "All Organizations" : org}
                   </option>
                 ))}
               </select>
-
             </div>
           </div>
 
@@ -184,7 +195,6 @@ export default function AlumniDashboard() {
                 >
                   <div className="h-32 bg-gray-800/50"></div>
                   <div className="p-4 space-y-3">
-
                     <div className="h-4 bg-gray-800/60 rounded w-3/4"></div>
                     <div className="h-3 bg-gray-800/60 rounded w-1/2"></div>
 
@@ -196,7 +206,6 @@ export default function AlumniDashboard() {
                       <div className="w-8 h-8 bg-gray-800/60 rounded-lg"></div>
                       <div className="w-8 h-8 bg-gray-800/60 rounded-lg"></div>
                     </div>
-
                   </div>
                 </div>
               ))}
