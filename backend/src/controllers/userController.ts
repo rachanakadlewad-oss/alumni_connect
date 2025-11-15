@@ -25,8 +25,8 @@ export const getAllAlumni = async (req: Request, res: Response) => {
       },
     });
     const finalUsers = users
-  .filter((user) => user.role === "ALUMNI") // only alumni
-  .map((user) => ({
+  .filter((user:any) => user.role === "ALUMNI") 
+  .map((user:any) => ({
     ...user,
     role: "ALUMNI",
   }));
