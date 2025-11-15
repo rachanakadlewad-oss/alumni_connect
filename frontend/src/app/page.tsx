@@ -24,7 +24,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative bg-black w-full h-full overflow-hidde">
+    <div className="relative bg-black w-full h-full overflow-hidden">
       <div className="absolute inset-0 w-full h-screen">
         <Particles
           particleColors={['#e0f2fe', '#dbeafe', '#bfdbfe']}

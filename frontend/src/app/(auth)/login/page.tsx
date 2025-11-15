@@ -6,10 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 
-
-
-
-
 export interface Testimonial {
   avatarSrc: string;
   name: string;

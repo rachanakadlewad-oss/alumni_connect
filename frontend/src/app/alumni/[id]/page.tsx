@@ -1,56 +1,56 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { 
-  Linkedin, 
-  Github, 
-  Globe, 
-  Mail, 
-  Briefcase, 
-  Calendar, 
-  ArrowLeft, 
+import React, { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import {
+  Linkedin,
+  Github,
+  Globe,
+  Mail,
+  ArrowLeft,
   User,
   Award,
   GraduationCap,
-  Building2
-} from 'lucide-react';
-import axios from 'axios';
-import MagicBento, {BentoCardProps} from '@/app/components/MagicBento';
-import ShinyText from '@/app/components/ShinyText';
+  Building2,
+} from "lucide-react";
+import axios from "axios";
+import MagicBento, { BentoCardProps } from "@/app/components/MagicBento";
+import ShinyText from "@/app/components/ShinyText";
 
 interface Alumni {
-  id:string;
+  id: string;
   batch: string;
   bio: string;
   email: string;
   github: string;
   linkedin: string;
   name: string;
-  organisation: {name:string};
+  organisation: { name: string };
   website: string;
-  picture?: string | null; 
-  role?: string; 
+  picture?: string | null;
+  role?: string;
 }
 
 export default function AlumniDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
-  const [alumni, setAlumni] = useState<Alumni|null>(null);
+  const [alumni, setAlumni] = useState<Alumni | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string|null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAlumniDetails = async () => {
       try {
         setLoading(true);
         setError(null);
-        
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/user/${id}`);
+
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user/${id}`
+        );
         setAlumni(response.data);
       } catch (err) {
-        console.error('Error fetching alumni details:', err);
-        setError('Failed to load alumni details. Please try again later.');
+        console.error("Error fetching alumni details:", err);
+        setError("Failed to load alumni details. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -61,11 +61,11 @@ export default function AlumniDetailsPage() {
     }
   }, [id]);
 
-  const getInitials = (name:string) => {
+  const getInitials = (name: string) => {
     return name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
       .toUpperCase()
       .slice(0, 2);
   };
@@ -75,19 +75,22 @@ export default function AlumniDetailsPage() {
       <div className="pt-25 min-h-screen bg-gradient-to-t from-black via-gray-950 to-black">
         <div className="max-w-4xl mx-auto">
           <div className="animate-pulse">
-            <div className="h-10 bg-gray-200 rounded w-32 mb-8"></div>
-            <div className="bg-white rounded-2xl shadow-sm p-8">
+            <div className="h-10 bg-gray-800 rounded w-32 mb-8"></div>
+
+            <div className="bg-[#0f0f0f] rounded-2xl border border-gray-800 p-8">
               <div className="flex items-start gap-6 mb-8">
-                <div className="w-32 h-32 bg-gray-200 rounded-full"></div>
-                <div className="flex-1">
-                  <div className="h-8 bg-gray-200 rounded w-3/4 mb-3"></div>
-                  <div className="h-5 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-5 bg-gray-200 rounded w-1/3"></div>
+                <div className="w-32 h-32 bg-gray-800 rounded-full"></div>
+
+                <div className="flex-1 space-y-3">
+                  <div className="h-8 bg-gray-800 rounded w-3/4"></div>
+                  <div className="h-5 bg-gray-800 rounded w-1/2"></div>
+                  <div className="h-5 bg-gray-800 rounded w-1/3"></div>
                 </div>
               </div>
+
               <div className="space-y-4">
-                <div className="h-4 bg-gray-200 rounded w-full"></div>
-                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                <div className="h-4 bg-gray-800 rounded w-full"></div>
+                <div className="h-4 bg-gray-800 rounded w-5/6"></div>
               </div>
             </div>
           </div>
@@ -120,79 +123,72 @@ export default function AlumniDetailsPage() {
     );
   }
   const alumniCards: BentoCardProps[] = [
-    // Card 1: Profile
     {
-  color: '#060010',
-  label: 'Profile',
-  icon: <User className="w-5 h-5" />,
-  content: (
-    <div className="flex flex-col h-full relative z-10">
-
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-white text-lg font-semibold">Profile</span>
-        <User className="w-5 h-5 text-white/80" />
-      </div>
-
-      {/* Rectangular banner (full width, consistent rounding & spacing) */}
-      <div className="w-full h-40 rounded-lg overflow-hidden mb-4 border border-white/10 bg-gradient-to-br from-purple-900/50 to-purple-700/30">
-        {alumni.picture ? (
-          <img
-            src={alumni.picture}
-            alt={alumni.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="text-white/90 text-4xl font-semibold">
-              {getInitials(alumni.name)}
-            </span>
+      color: "#060010",
+      label: "Profile",
+      icon: <User className="w-5 h-5" />,
+      content: (
+        <div className="flex flex-col h-full relative z-10">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-white text-lg font-semibold">Profile</span>
+            <User className="w-5 h-5 text-white/80" />
           </div>
-        )}
-      </div>
 
-      {/* Name + Role */}
-      <h3 className="text-white text-xl font-semibold leading-tight mb-1">
-        {alumni.name}
-      </h3>
-      <p className="text-white/80 text-sm uppercase tracking-wide">
-        {alumni.role || 'Alumni'}
-      </p>
+          <div className="w-full h-40 rounded-lg overflow-hidden mb-4 border border-white/10 bg-gradient-to-br from-purple-900/50 to-purple-700/30">
+            {alumni.picture ? (
+              <img
+                src={alumni.picture}
+                alt={alumni.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-white/90 text-4xl font-semibold">
+                  {getInitials(alumni.name)}
+                </span>
+              </div>
+            )}
+          </div>
 
-    </div>
-  )
-},
-
-    {
-  color: '#060010',
-  label: 'Contact',
-  icon: <Mail className="w-6 h-6" />,
-  content: (
-    <div className="flex flex-col h-full justify-between relative z-10">
-      <div className="flex justify-between items-center">
-        <span className="text-lg text-white font-semibold">Contact</span>
-        <Mail className="w-6 h-6 text-white opacity-80" />
-      </div>
-
-      <a
-        href={`mailto:${alumni.email}`}
-        className="flex items-center gap-4 p-4 rounded-xl mt-4 bg-[#0c0c19] hover:bg-[#141428] 
-                   border border-[#1f1f2f] hover:border-[#2a2a44] transition-all group"
-      >
-        <Mail className="w-6 h-6 text-purple-300" />
-        <div>
-          <p className="text-base font-semibold text-white">Email</p>
-          <p className="text-sm text-white/60 break-all">{alumni.email}</p>
+          <h3 className="text-white text-xl font-semibold leading-tight mb-1">
+            {alumni.name}
+          </h3>
+          <p className="text-white/80 text-sm uppercase tracking-wide">
+            {alumni.role || "Alumni"}
+          </p>
         </div>
-      </a>
-    </div>
-  )
-},
+      ),
+    },
 
     {
-      color: '#060010',
-      label: 'Connect',
-       size: 'lg',      
+      color: "#060010",
+      label: "Contact",
+      icon: <Mail className="w-6 h-6" />,
+      content: (
+        <div className="flex flex-col h-full justify-between relative z-10">
+          <div className="flex justify-between items-center">
+            <span className="text-lg text-white font-semibold">Contact</span>
+            <Mail className="w-6 h-6 text-white opacity-80" />
+          </div>
+
+          <a
+            href={`mailto:${alumni.email}`}
+            className="flex items-center gap-4 p-4 rounded-xl mt-4 bg-[#0c0c19] hover:bg-[#141428] border border-[#1f1f2f] hover:border-[#2a2a44] transition-all group"
+          >
+            <Mail className="w-6 h-6 text-purple-300" />
+            <div>
+              <p className="text-base font-semibold text-white">Email</p>
+              <p className="text-sm text-white/60 break-all">{alumni.email}</p>
+            </div>
+          </a>
+        </div>
+      ),
+    },
+
+    {
+      color: "#060010",
+      label: "Connect",
+      size: "lg",
       content: (
         <div className="flex flex-col h-full justify-between relative z-10">
           <div className="flex justify-between items-center">
@@ -214,7 +210,6 @@ export default function AlumniDetailsPage() {
                   <p className="text-sm text-white/60">View profile</p>
                 </div>
               </a>
-
             )}
 
             {alumni.github && (
@@ -250,92 +245,78 @@ export default function AlumniDetailsPage() {
             )}
           </div>
         </div>
-      )
+      ),
     },
 
-    // Card 4: About (Large card)
     {
-      color: '#060010',
-      label: 'About',
+      color: "#060010",
+      label: "About",
       icon: <Award className="w-5 h-5" />,
       content: (
         <div className="flex flex-col h-full relative z-10">
           <div className="flex justify-between items-center  mb-4">
-            <span className="text-xl font-semibold text-base text-white">About</span>
+            <span className="text-xl font-semibold text-white">About</span>
             <Award className="w-6 h-6 text-white opacity-80" />
           </div>
           <div className="mt-2">
-             <p className="text-lg leading-8 opacity-90 text-white">
-              <ShinyText 
+            <p className="text-lg leading-8 opacity-90 text-white">
+              <ShinyText
                 text={alumni.bio}
-                disabled={false} 
-                speed={3} 
-                className="text-5xl"
+                disabled={false}
+                speed={3}
+                className="text-2xl"
               />
-           
-           </p>
+            </p>
           </div>
         </div>
-      )
+      ),
     },
 
-    // Card 5: Batch
     {
-  color: '#060010',
-  label: 'Education',
-  icon: <GraduationCap className="w-5 h-5" />,
-  content: (
-    <div className="flex flex-col h-full relative z-10">
+      color: "#060010",
+      label: "Education",
+      icon: <GraduationCap className="w-5 h-5" />,
+      content: (
+        <div className="flex flex-col h-full relative z-10">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-white text-xl font-semibold">Education</span>
+            <GraduationCap className="w-6 h-6 text-white opacity-80" />
+          </div>
 
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <span className="text-white text-xl font-semibold">Education</span>
-        <GraduationCap className="w-6 h-6 text-white opacity-80" />
-      </div>
+          <div className="flex flex-col justify-end flex-grow p-1">
+            <div className="border-t border-white/10 my-2"></div>
 
-      {/* Content area */}
-      <div className="flex flex-col justify-end flex-grow p-1">
+            <h3 className="text-white text-2xl font-medium mb-1">
+              Batch of {alumni.batch}
+            </h3>
+            <p className="text-white/60 text-sm">Graduation year</p>
+          </div>
+        </div>
+      ),
+    },
 
-        <div className="border-t border-white/10 my-2"></div>
-
-        <h3 className="text-white text-2xl font-medium mb-1">
-          Batch of {alumni.batch}
-        </h3>
-        <p className="text-white/60 text-sm">Graduation year</p>
-      </div>
-
-    </div>
-  )
-},
-
-    // Card 6: Organization
     {
-  color: '#060010',
-  label: 'Career',
-  icon: <Building2 className="w-5 h-5" />,
-  content: (
-    <div className="flex flex-col h-full relative z-10">
+      color: "#060010",
+      label: "Career",
+      icon: <Building2 className="w-5 h-5" />,
+      content: (
+        <div className="flex flex-col h-full relative z-10">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-white text-xl font-semibold">Career</span>
+            <Building2 className="w-6 h-6 text-white opacity-80" />
+          </div>
 
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <span className="text-white text-xl font-semibold">Career</span>
-        <Building2 className="w-6 h-6 text-white opacity-80" />
-      </div>
+          <div className="flex flex-col justify-end flex-grow p-1">
+            <div className="border-t border-white/10 my-2"></div>
 
-      {/* Content area */}
-      <div className="flex flex-col justify-end flex-grow p-1">
-
-        <div className="border-t border-white/10 my-2"></div>
-
-        <h3 className="text-white text-2xl font-medium mb-1">
-          {alumni.organisation.name}
-        </h3>
-        <p className="text-white/60 text-sm">Current organization</p>
-      </div>
-
-    </div>
-  )
-}
+            <h3 className="text-white text-2xl font-medium mb-1">
+              {alumni.organisation.name}
+            </h3>
+            <p className="text-white/60 text-sm">Current organization</p>
+          </div>
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -345,13 +326,12 @@ export default function AlumniDetailsPage() {
           onClick={() => router.back()}
           className="flex items-center gap-2 text-gray-400 hover:white mb-6 transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" /> 
+          <ArrowLeft className="w-5 h-5" />
           <span className="font-medium">Back to Alumni</span>
         </button>
         <div className="mb-6">
-          
           <MagicBento
-            cardData={alumniCards} // Pass custom data here
+            cardData={alumniCards}
             textAutoHide={false}
             enableStars={true}
             enableSpotlight={true}
