@@ -1,16 +1,49 @@
-import { account } from "../config/appWrite.js";
-import { type Request, type Response, type NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv";
+import client from "../prismaClient.js";
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const jwt = req.headers.authorization?.split(" ")[1];
-    if (!jwt) return res.status(401).json({ error: "Unauthorized" });
+dotenv.config()
+const JWT_SECRET = process.env.JWT_SECRET || "ddd"
 
-    try {
-        const user = await account.get();
-        (req as any).user = user;
-        next();
+async function authMiddleware(req: Request,res: Response,next: NextFunction){
+    const token = req.headers["authorization"]
+    
+    if (!token) {
+        return res.status(401).json({ 
+            message: "Token missing, user not authenticated" 
+        });
     }
-    catch (error) {
-        return res.status(401).json({ error: "Invalid or expired token" });
+
+    try{
+        const user = jwt.verify(token,JWT_SECRET);
+        if(typeof user === "object" && "id" in user){
+            const newUser = await client.user.findFirst({
+                where: {
+                    id: user.id
+                }
+            }) 
+            if (!newUser) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            console.log(newUser);
+            if(user){
+                //@ts-ignore
+                req.user = newUser
+                next();
+            }
+            else{
+                res.status(403).json({
+                    message: "You are not loged in"
+                })
+            }
+        }
     }
-};
+    catch(e){
+        return res.status(401).json({
+            message: "Invalid or expired token"
+        })
+    }
+}
+
+export default authMiddleware;
