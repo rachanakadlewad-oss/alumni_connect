@@ -1,10 +1,9 @@
 "use client"
+import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '../../components/Button';
-import { useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeClosed } from 'lucide-react';
+import axios from 'axios';
 
 interface FormData {
     email: string;
@@ -12,12 +11,12 @@ interface FormData {
     password: string;
     confirmPassword: string;
     role: Role;
-    batch: string,
-    github: string,
-    linkedin: string,
-    bio: string,
-    website: string,
-    organisation: string
+    batch: string;
+    github: string;
+    linkedin: string;
+    bio: string;
+    website: string;
+    organisation: string;
 }
 
 enum Role {
@@ -34,10 +33,59 @@ interface FormErrors {
     general: string;
 }
 
+// --- SUB-COMPONENTS ---
+
+const GlassInputWrapper = ({ children, hasError }: { children: React.ReactNode; hasError?: boolean }) => (
+  <div className={`rounded-2xl border ${hasError ? 'border-red-500/70' : 'border-zinc-700'} bg-zinc-900/50 backdrop-blur-sm transition-colors focus-within:border-violet-400/70 focus-within:bg-violet-500/10`}>
+    {children}
+  </div>
+);
+
+export interface Testimonial {
+  avatarSrc: string;
+  name: string;
+  handle: string;
+  text: string;
+}
+
+const TestimonialCard = ({ testimonial, delay }: { testimonial: Testimonial, delay: string }) => (
+  <div className={`${delay} flex items-start gap-3 rounded-3xl bg-zinc-800/40 backdrop-blur-xl border border-zinc-700/50 p-5 w-64 opacity-0 animate-[slideUp_0.6s_ease-out_forwards]`}>
+    <img src={testimonial.avatarSrc} className="h-10 w-10 object-cover rounded-2xl" alt="avatar" />
+    <div className="text-sm leading-snug">
+      <p className="flex items-center gap-1 font-medium text-zinc-50">{testimonial.name}</p>
+      <p className="text-zinc-400">{testimonial.handle}</p>
+      <p className="mt-1 text-zinc-300">{testimonial.text}</p>
+    </div>
+  </div>
+);
+
+const sampleTestimonials: Testimonial[] = [
+  {
+    avatarSrc: "https://randomuser.me/api/portraits/women/44.jpg",
+    name: "Emily Rodriguez",
+    handle: "@emilytech",
+    text: "Joining this platform was the best decision. It's connected me with amazing opportunities!"
+  },
+  {
+    avatarSrc: "https://randomuser.me/api/portraits/men/86.jpg",
+    name: "James Wilson",
+    handle: "@jameswilson",
+    text: "The community here is incredible. I've learned so much and made great connections."
+  },
+  {
+    avatarSrc: "https://randomuser.me/api/portraits/women/68.jpg",
+    name: "Sophia Anderson",
+    handle: "@sophiacodes",
+    text: "A game-changer for my career. Highly recommend to anyone looking to grow professionally."
+  },
+];
+
+// --- MAIN COMPONENT ---
+
 export default function Register() {
     const router = useRouter();
-    const [showPass,setShowPass]=useState(false)
-    const [showPassCon,setShowPassCon]=useState(false)
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<FormData>({
         email: '',
@@ -98,7 +146,7 @@ export default function Register() {
         return !Object.values(newErrors).some(error => error !== '');
     };
 
-    const handleSubmit = async (event: React.FormEvent): Promise<void> => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
 
         if (!validateForm()) {
@@ -121,18 +169,18 @@ export default function Register() {
                 password: formData.password,
                 name: formData.name,
                 role: formData.role,
-                batch:formData.batch,
-                linkedin:formData.linkedin,
-                github:formData.github,
-                organisation:formData.organisation,
-                website:formData.website,
-                bio:formData.bio
+                batch: formData.batch,
+                linkedin: formData.linkedin,
+                github: formData.github,
+                organisation: formData.organisation,
+                website: formData.website,
+                bio: formData.bio
             };
 
             console.log('Registration data:', registrationData);
 
             const result = await axios.post(
-               `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
+                `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
                 registrationData
             );
 
@@ -203,181 +251,259 @@ export default function Register() {
     };
 
     return (
-        <div className=" mt-25 flex flex-col gap-y-4 justify-center items-center w-full min-h-screen p-4 bg-gradient-to-br from-blue-50 via-white to-purple-50">
-            <div className='text-3xl font-bold text-blue-700'>Register</div>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-y-4 bg-blue-700/10 w-full max-w-md rounded-lg p-6 sm:p-8 shadow-lg">
+        <div className="min-h-screen pt-20 flex flex-col md:flex-row w-full bg-zinc-950 text-zinc-50 overflow-hidden">
+            {/* Left column: register form */}
+            <section className="flex-1 flex items-center justify-center p-8 overflow-y-auto">
+                <div className="w-full max-w-md">
+                    <div className="flex flex-col gap-6">
+                        <h1 className="text-4xl md:text-5xl font-semibold leading-tight opacity-0 animate-[fadeIn_0.6s_ease-out_0.1s_forwards]">
+                            <span className="font-light text-zinc-50 tracking-tighter">Create Account</span>
+                        </h1>
+                        <p className="text-zinc-400 opacity-0 animate-[fadeIn_0.6s_ease-out_0.2s_forwards]">
+                            Join our community and start your journey with us
+                        </p>
 
-                <div className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700">Email *</label>
-                    <input
-                        placeholder="Enter your email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        className={`p-3 outline-none bg-blue-800/20 rounded-md transition-colors focus:bg-blue-800/30 focus:ring-2 focus:ring-blue-500/50 ${errors.email ? 'border border-red-400' : ''
-                            }`}
-                        required
-                    />
-                    {errors.email && <span className="text-red-500 text-xs mt-1">{errors.email}</span>}
-                </div>
+                        <form className="space-y-4" onSubmit={handleSubmit}>
+                            <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.3s_forwards]">
+                                <label className="text-sm font-medium text-zinc-400">Email Address</label>
+                                <GlassInputWrapper hasError={!!errors.email}>
+                                    <input
+                                        name="email"
+                                        type="email"
+                                        placeholder="Enter your email address"
+                                        value={formData.email}
+                                        onChange={(e) => handleInputChange('email', e.target.value)}
+                                        className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none text-zinc-50 placeholder:text-zinc-500"
+                                        required
+                                    />
+                                </GlassInputWrapper>
+                                {errors.email && <span className="text-red-500 text-xs mt-1 block">{errors.email}</span>}
+                            </div>
 
-                <div className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700">Full Name *</label>
-                    <input
-                        placeholder="Enter your full name"
-                        type="text"
-                        value={formData.name}
-                        onChange={(e) => handleInputChange('name', e.target.value)}
-                        className={`p-3 outline-none bg-blue-800/20 rounded-md transition-colors focus:bg-blue-800/30 focus:ring-2 focus:ring-blue-500/50 ${errors.email ? 'border border-red-400' : ''
-                            }`}
-                        required
-                    />
-                    {errors.name && <span className="text-red-500 text-xs mt-1">{errors.name}</span>}
-                </div>
+                            <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.35s_forwards]">
+                                <label className="text-sm font-medium text-zinc-400">Full Name</label>
+                                <GlassInputWrapper hasError={!!errors.name}>
+                                    <input
+                                        name="name"
+                                        type="text"
+                                        placeholder="Enter your full name"
+                                        value={formData.name}
+                                        onChange={(e) => handleInputChange('name', e.target.value)}
+                                        className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none text-zinc-50 placeholder:text-zinc-500"
+                                        required
+                                    />
+                                </GlassInputWrapper>
+                                {errors.name && <span className="text-red-500 text-xs mt-1 block">{errors.name}</span>}
+                            </div>
 
-                <div className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700">Password *</label>
-                    <div className='relative'>
-                    <input
-                        placeholder="Create a password (min 6 characters)"
-                        type={showPass?"text":"password"}
-                        value={formData.password}
-                        onChange={(e) => handleInputChange('password', e.target.value)}
-                        className={`p-3 outline-none w-full bg-blue-800/20 rounded-md transition-colors focus:bg-blue-800/30 focus:ring-2 focus:ring-blue-500/50 ${errors.email ? 'border border-red-400' : ''
-                            }`}
-                        required
-                    />
-                    {showPass?<Eye className='absolute top-3 right-5' onClick={()=>setShowPass(!showPass)}/>:<EyeClosed className='absolute top-3 right-5' onClick={()=>setShowPass(!showPass)}/>}
+                            <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.4s_forwards]">
+                                <label className="text-sm font-medium text-zinc-400">Password</label>
+                                <GlassInputWrapper hasError={!!errors.password}>
+                                    <div className="relative">
+                                        <input
+                                            name="password"
+                                            type={showPassword ? 'text' : 'password'}
+                                            placeholder="Create a password (min 6 characters)"
+                                            value={formData.password}
+                                            onChange={(e) => handleInputChange('password', e.target.value)}
+                                            className="w-full bg-transparent text-sm p-4 pr-12 rounded-2xl focus:outline-none text-zinc-50 placeholder:text-zinc-500"
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute inset-y-0 right-3 flex items-center"
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="w-5 h-5 text-zinc-400 hover:text-zinc-50 transition-colors" />
+                                            ) : (
+                                                <Eye className="w-5 h-5 text-zinc-400 hover:text-zinc-50 transition-colors" />
+                                            )}
+                                        </button>
+                                    </div>
+                                </GlassInputWrapper>
+                                {errors.password && <span className="text-red-500 text-xs mt-1 block">{errors.password}</span>}
+                            </div>
+
+                            <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.45s_forwards]">
+                                <label className="text-sm font-medium text-zinc-400">Confirm Password</label>
+                                <GlassInputWrapper hasError={!!errors.confirmPassword}>
+                                    <div className="relative">
+                                        <input
+                                            name="confirmPassword"
+                                            type={showConfirmPassword ? 'text' : 'password'}
+                                            placeholder="Confirm your password"
+                                            value={formData.confirmPassword}
+                                            onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                                            className="w-full bg-transparent text-sm p-4 pr-12 rounded-2xl focus:outline-none text-zinc-50 placeholder:text-zinc-500"
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="absolute inset-y-0 right-3 flex items-center"
+                                        >
+                                            {showConfirmPassword ? (
+                                                <EyeOff className="w-5 h-5 text-zinc-400 hover:text-zinc-50 transition-colors" />
+                                            ) : (
+                                                <Eye className="w-5 h-5 text-zinc-400 hover:text-zinc-50 transition-colors" />
+                                            )}
+                                        </button>
+                                    </div>
+                                </GlassInputWrapper>
+                                {errors.confirmPassword && <span className="text-red-500 text-xs mt-1 block">{errors.confirmPassword}</span>}
+                                {formData.password !== '' && formData.confirmPassword !== '' && formData.password === formData.confirmPassword && (
+                                    <span className="text-green-500 text-xs mt-1 block">Passwords match ✓</span>
+                                )}
+                            </div>
+
+                            <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.5s_forwards]">
+                                <label className="text-sm font-medium text-zinc-400">Batch</label>
+                                <GlassInputWrapper>
+                                    <input
+                                        name="batch"
+                                        type="text"
+                                        placeholder="e.g., 2024, 2025"
+                                        value={formData.batch}
+                                        onChange={(e) => handleInputChange('batch', e.target.value)}
+                                        className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none text-zinc-50 placeholder:text-zinc-500"
+                                        required
+                                    />
+                                </GlassInputWrapper>
+                            </div>
+
+                            <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.55s_forwards]">
+                                <label className="text-sm font-medium text-zinc-400">Role</label>
+                                <GlassInputWrapper hasError={!!errors.role}>
+                                    <select
+                                        name="role"
+                                        value={formData.role}
+                                        onChange={(e) => handleInputChange('role', e.target.value as Role)}
+                                        className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none text-zinc-50 cursor-pointer"
+                                        required
+                                    >
+                                        <option value={Role.STUDENT} className="bg-zinc-900">Student</option>
+                                        <option value={Role.ALUMNI} className="bg-zinc-900">Alumni</option>
+                                    </select>
+                                </GlassInputWrapper>
+                                {errors.role && <span className="text-red-500 text-xs mt-1 block">{errors.role}</span>}
+                            </div>
+
+                            {formData.role === "ALUMNI" && (
+                                <>
+                                    <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.6s_forwards]">
+                                        <label className="text-sm font-medium text-zinc-400">LinkedIn</label>
+                                        <GlassInputWrapper>
+                                            <input
+                                                name="linkedin"
+                                                type="url"
+                                                placeholder="LinkedIn profile link"
+                                                value={formData.linkedin}
+                                                onChange={(e) => handleInputChange('linkedin', e.target.value)}
+                                                className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none text-zinc-50 placeholder:text-zinc-500"
+                                            />
+                                        </GlassInputWrapper>
+                                    </div>
+
+                                    <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.65s_forwards]">
+                                        <label className="text-sm font-medium text-zinc-400">GitHub</label>
+                                        <GlassInputWrapper>
+                                            <input
+                                                name="github"
+                                                type="url"
+                                                placeholder="GitHub profile link"
+                                                value={formData.github}
+                                                onChange={(e) => handleInputChange('github', e.target.value)}
+                                                className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none text-zinc-50 placeholder:text-zinc-500"
+                                            />
+                                        </GlassInputWrapper>
+                                    </div>
+
+                                    <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.7s_forwards]">
+                                        <label className="text-sm font-medium text-zinc-400">Personal Website</label>
+                                        <GlassInputWrapper>
+                                            <input
+                                                name="website"
+                                                type="url"
+                                                placeholder="Portfolio or website"
+                                                value={formData.website}
+                                                onChange={(e) => handleInputChange('website', e.target.value)}
+                                                className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none text-zinc-50 placeholder:text-zinc-500"
+                                            />
+                                        </GlassInputWrapper>
+                                    </div>
+
+                                    <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.75s_forwards]">
+                                        <label className="text-sm font-medium text-zinc-400">Organisation</label>
+                                        <GlassInputWrapper>
+                                            <input
+                                                name="organisation"
+                                                type="text"
+                                                placeholder="Your company or institute"
+                                                value={formData.organisation}
+                                                onChange={(e) => handleInputChange('organisation', e.target.value)}
+                                                className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none text-zinc-50 placeholder:text-zinc-500"
+                                            />
+                                        </GlassInputWrapper>
+                                    </div>
+
+                                    <div className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.8s_forwards]">
+                                        <label className="text-sm font-medium text-zinc-400">Bio</label>
+                                        <GlassInputWrapper>
+                                            <textarea
+                                                name="bio"
+                                                placeholder="Tell us about yourself"
+                                                value={formData.bio}
+                                                onChange={(e) => handleInputChange('bio', e.target.value)}
+                                                rows={3}
+                                                className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none text-zinc-50 placeholder:text-zinc-500 resize-none"
+                                            />
+                                        </GlassInputWrapper>
+                                    </div>
+                                </>
+                            )}
+
+                            {errors.general && (
+                                <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3">
+                                    <span className="text-red-500 text-sm">{errors.general}</span>
+                                </div>
+                            )}
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.85s_forwards] w-full rounded-2xl bg-violet-600 py-4 font-medium text-white hover:bg-violet-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loading ? 'Creating Account...' : 'Create Account'}
+                            </button>
+                        </form>
+
+                        <p className="opacity-0 animate-[fadeIn_0.6s_ease-out_0.9s_forwards] text-center text-sm text-zinc-400">
+                            Already have an account?{' '}
+                            <Link href="/login" className="text-violet-400 hover:underline transition-colors">
+                                Sign In
+                            </Link>
+                        </p>
                     </div>
-                    {errors.password && <span className="text-red-500 text-xs mt-1">{errors.password}</span>}
                 </div>
+            </section>
 
-                <div className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700">Confirm Password *</label>
-                    <div className='relative'>
-                    <input
-                        placeholder="Confirm your password"
-                        type={showPassCon?"text":"password"}
-                        value={formData.confirmPassword}
-                        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                        className={`p-3 outline-none w-full bg-blue-800/20 rounded-md transition-colors focus:bg-blue-800/30 focus:ring-2 focus:ring-blue-500/50 ${errors.email ? 'border border-red-400' : ''
-                            }`}
-                        required
-                    />
-                    {showPassCon?<Eye className='absolute top-3 right-5' onClick={()=>setShowPassCon(!showPassCon)}/>:<EyeClosed className='absolute top-3 right-5' onClick={()=>setShowPassCon(!showPassCon)}/>}
+            {/* Right column: hero image + testimonials */}
+            <section className="hidden md:block flex-1 relative p-4">
+                <div
+                    className="opacity-0 animate-[slideRight_0.8s_ease-out_0.3s_forwards] absolute inset-4 rounded-3xl bg-cover bg-center"
+                    style={{ backgroundImage: `url(https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=2160&q=80)` }}
+                ></div>
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 px-8 w-full justify-center">
+                    <TestimonialCard testimonial={sampleTestimonials[0]} delay="delay-[1000ms]" />
+                    <div className="hidden xl:flex">
+                        <TestimonialCard testimonial={sampleTestimonials[1]} delay="delay-[1200ms]" />
                     </div>
-                    {errors.confirmPassword && <span className="text-red-500 text-xs mt-1">{errors.confirmPassword}</span>}
-                    {formData.password !== '' && formData.confirmPassword !== '' && formData.password === formData.confirmPassword && (
-                        <span className="text-green-500 text-xs mt-1">Passwords match ✓</span>
-                    )}
-                </div>
-
-                <div className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700">Batch *</label>
-                    <input
-                        type="text"
-                        value={formData.batch}
-                        onChange={(e) => handleInputChange('batch', e.target.value)}
-                        className={`p-3 outline-none bg-blue-800/20 rounded-md transition-colors focus:bg-blue-800/30 focus:ring-2 focus:ring-blue-500/50 ${errors.email ? 'border border-red-400' : ''
-                            }`}
-                        placeholder="e.g., 2024, 2025"
-                        required
-                    />
-                </div>
-                <div className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700"> Role *</label>
-                    <select
-                        value={formData.role}
-                        onChange={(e) => handleInputChange('role', e.target.value as Role)}
-                        className={`p-3 outline-none  bg-blue-800/20 border rounded-md transition-colors focus:ring-2 focus:ring-blue-500  ${errors.role ? 'border-red-400' : 'border-gray-300'
-                            }`}
-                        required
-                    >
-                        <option value={Role.STUDENT}>Student</option>
-                        <option value={Role.ALUMNI}>Alumni</option>
-                    </select>
-                    {errors.role && <span className="text-red-500 text-xs mt-1">{errors.role}</span>}
-                    <span className="text-xs text-gray-500 mt-1">
-                        Selected: {formData.role}
-                    </span>
-                </div>
-
-                {formData.role=="ALUMNI"&&<div  className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700">LinkedIn</label>
-                    <input
-                        type="url"
-                        value={formData.linkedin}
-                        onChange={(e) => handleInputChange('linkedin', e.target.value)}
-                        className={`p-3 outline-none bg-blue-800/20 rounded-md transition-colors focus:bg-blue-800/30 focus:ring-2 focus:ring-blue-500/50 ${errors.email ? 'border border-red-400' : ''
-                            }`}
-                        placeholder="LinkedIn profile link"
-                    />
-                </div>}
-
-                {formData.role=="ALUMNI"&&<div  className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700">GitHub</label>
-                    <input
-                        type="url"
-                        value={formData.github}
-                        onChange={(e) => handleInputChange('github', e.target.value)}
-                        className={`p-3 outline-none bg-blue-800/20 rounded-md transition-colors focus:bg-blue-800/30 focus:ring-2 focus:ring-blue-500/50 ${errors.email ? 'border border-red-400' : ''
-                            }`}
-                        placeholder="GitHub profile link"
-                    />
-                </div>}
-
-                {formData.role=="ALUMNI"&&<div  className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700">Personal Website</label>
-                    <input
-                        type="url"
-                        value={formData.website}
-                        onChange={(e) => handleInputChange('website', e.target.value)}
-                        className={`p-3 outline-none bg-blue-800/20 rounded-md transition-colors focus:bg-blue-800/30 focus:ring-2 focus:ring-blue-500/50 ${errors.email ? 'border border-red-400' : ''
-                            }`}
-                        placeholder="Portfolio or website"
-                    />
-                </div>}
-                {formData.role=="ALUMNI"&&<div  className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700">Organisation</label>
-                    <input
-                        type="text"
-                        value={formData.organisation}
-                        onChange={(e) => handleInputChange('organisation', e.target.value)}
-                        className={`p-3 outline-none bg-blue-800/20 rounded-md transition-colors focus:bg-blue-800/30 focus:ring-2 focus:ring-blue-500/50 ${errors.email ? 'border border-red-400' : ''
-                            }`}
-                        placeholder="Your company or institute"
-                    />
-                </div>}
-                {formData.role=="ALUMNI"&&<div  className="flex flex-col gap-y-1">
-                    <label className="text-sm font-medium text-blue-700">Bio</label>
-                    <textarea
-                        value={formData.bio}
-                        onChange={(e) => handleInputChange('bio', e.target.value)}
-                        className={`p-3 outline-none bg-blue-800/20 rounded-md transition-colors focus:bg-blue-800/30 focus:ring-2 focus:ring-blue-500/50 ${errors.email ? 'border border-red-400' : ''
-                            }`}
-                        rows={3}
-                    />
-                </div>}
-
-                {errors.general && (
-                    <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                        <span className="text-red-600 text-sm">{errors.general}</span>
+                    <div className="hidden 2xl:flex">
+                        <TestimonialCard testimonial={sampleTestimonials[2]} delay="delay-[1400ms]" />
                     </div>
-                )}
-
-                <Button variant='primary' className='mt-4 w-full py-3' type="submit" loading={loading}>
-                    Register
-                </Button>
-
-                <div className="text-center mt-2">
-                    <span className="text-sm text-gray-600">
-                        Already have an account?
-                        <Link href='/auth/login' className="ml-1 text-blue-600 hover:text-blue-800 underline font-medium">
-                            Sign In
-                        </Link>
-                    </span>
                 </div>
-            </form>
+            </section>
         </div>
     );
 }
