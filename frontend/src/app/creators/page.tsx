@@ -3,38 +3,48 @@
 import React from "react";
 import ProfileCard from "../components/ProfileCard";
 import { motion } from "framer-motion";
-import aditya from "/aditya.jpg"
+import aditya from "/aditya.jpg";
 
 function Creators() {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.05, delayChildren: 0.2 },
+      transition: {
+        staggerChildren: 0.05,
+        delayChildren: 0.2,
+      },
     },
   };
 
+  // FINAL FIXED VARIANTS – 100% TYPE-SAFE FOR motion-dom v11
   const letterVariants = {
-    hidden: { opacity: 0, y: 30, rotateX: -90 },
+    hidden: {
+      opacity: 0,
+      y: 30,
+      rotateX: -90,
+    },
     visible: {
       opacity: 1,
       y: 0,
       rotateX: 0,
-      transition: { type: "spring", damping: 15, stiffness: 180 },
+      transition: {
+        opacity: { duration: 0.4 },
+        y: { duration: 0.4 },
+        rotateX: { duration: 0.4 },
+      },
     },
   };
 
   return (
     <>
       <div className="relative overflow-hidden py-16 bg-black min-h-screen mt-20">
-
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-1/4 w-60 h-60 bg-gray-800/20 rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 right-1/3 w-72 h-72 bg-gray-700/20 rounded-full blur-3xl"></div>
         </div>
 
         <div className="relative z-10 container mx-auto px-6">
-
           <div className="text-center mb-16">
             <motion.div
               variants={containerVariants}
@@ -133,6 +143,7 @@ function Creators() {
               linkedinUrl="https://www.linkedin.com/in/rachana-kadlewad-655a8630b/"
               githubUrl="https://github.com/rachanakadlewad-oss"
             />
+
           </div>
         </div>
       </div>
